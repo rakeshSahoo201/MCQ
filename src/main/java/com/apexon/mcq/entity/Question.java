@@ -13,18 +13,14 @@ import java.util.List;
 @Table(name = "questions")
 public class Question {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private  long questionId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "question_id")
+    private  Long questionId;
 
-    @ManyToOne
-    @JoinColumn(name="skill_id")
-    private Skill skill;
-
-    @Column(columnDefinition = "TEXT", nullable = false)
     private String questionStatement;
-
-    @Column(columnDefinition = "TEXT", nullable = false)
     private String explanation;
+    private String area;
+    private String difficulty;
 
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Option> options;

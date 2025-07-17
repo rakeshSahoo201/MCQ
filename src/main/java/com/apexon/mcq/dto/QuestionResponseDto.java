@@ -1,22 +1,22 @@
 package com.apexon.mcq.dto;
 
-import com.apexon.mcq.entity.Option;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
 import java.util.Map;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @JsonPropertyOrder({ "Question", "questionStatement", "options" })
-public class QuestionDto {
+public class QuestionResponseDto {
     @JsonProperty("Question")
-    private int questionNumber;
+    private Long questionNumber;
+
     private String questionStatement;
+
     private Map<String, String> options;
 }
