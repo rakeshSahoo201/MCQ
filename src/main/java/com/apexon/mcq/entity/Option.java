@@ -11,9 +11,8 @@ import lombok.NoArgsConstructor;
 @Table(name="options")
 @Data
 public class Option {
-        @Id
-        @GeneratedValue(strategy = GenerationType.AUTO)
-        private Long id;
+        @EmbeddedId
+        private OptionId id;
 
         private boolean isCorrect;
 
@@ -22,6 +21,7 @@ public class Option {
         private String description;
 
         @ManyToOne
-        @JoinColumn(name = "question_id")
+        @MapsId("questionId")
+        @JoinColumn(name = "question_id", referencedColumnName = "question_id")
         private Question question;
 }
