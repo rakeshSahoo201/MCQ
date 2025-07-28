@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 @Service
@@ -31,10 +32,21 @@ public class MCQService {
     }
 
 
-    public List<QuestionDto> getQuestionsByArea(Long areaId) {
+    /*public List<QuestionDto> getQuestionsByArea(Long areaId) {
         List<Question> questions = questionRepository.findByAreaId(areaId);
         return questions.stream().map(this::mapToDto).collect(Collectors.toList());
+    }*/
+
+    public List<QuestionDto> getQuestionsByArea(Long areaId) {
+        List<Question> questions = questionRepository.findByAreaId(areaId);
+
+        AtomicInteger counter = new AtomicInteger(1);
+
+        return questions.stream()
+                .map(q -> mapToDto(q, counter.getAndIncrement()))
+                .collect(Collectors.toList());
     }
+
 
 
     /*public TestResultDto evaluateTest(Long areaId, List<UserAnswerDto> userAnswers) {
@@ -102,16 +114,11 @@ public class MCQService {
                 q.getExplanation()
         );
     }*/
- private QuestionDto mapToDto(Question q) {
+/* private QuestionDto mapToDto(Question q) {
      List<Option> options = optionRepository.findByQuestion(q);
 
      // Fetch all options explicitly
 
-     // 🔍 Debug: Print question and its options
-     System.out.println("Q: " + q.getQuestionId() + " → Options Fetched: " + options.size());
-     for (Option o : options) {
-         System.out.println("  OptionId: " + o.getId().getOptionId() + ", Label: " + o.getOptionLabel() + ", Statement: " + o.getOptionStatement());
-     }
 
      Map<String, String> optionsMap = options.stream()
              .sorted(Comparator.comparingInt(o -> o.getId().getOptionId())) // maintain order
@@ -128,7 +135,23 @@ public class MCQService {
              optionsMap,
              q.getExplanation()
      );
+ }*/
+ private QuestionDto mapToDto(Question q, int number) {
+     Map<String, String> optionsMap = q.getOptions()
+             .stream()
+             .collect(Collectors.toMap(
+                     Option::getOptionLabel,
+                     Option::getOptionStatement
+             ));
+
+     return new QuestionDto(
+             number, // Sequential number
+             q.getQuestionStatement(),
+             optionsMap,
+             q.getExplanation()
+     );
  }
+
 
 }
 
